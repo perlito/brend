@@ -1,0 +1,56 @@
+<script type="text/javascript" src="[% c.uri_for('..', 'static', 'javascript', 'manager', 'zoomik.js' )%]"></script>
+<center><a href="[% c.uri_for(c.controller.action_for('add_thing'), [obj_col.id] ) %]">Ավելացնել ապրանքներ</a></center><br>
+[% IF things.size >0 %]
+
+<table>
+	<tr><th>Գործողություն</th><th>Տեսակը</th><th>Նկար1</th><th>Նկար2</th><th>Նկար3</th><th>Գինը</th><th>Զեղջ</th><td>Այլ</td></tr>
+	[% WHILE (thing = things.next) %]
+		
+		<tr>
+			<td>
+				<a href="[% c.uri_for(c.controller.action_for('edit_thing'), [thing.id])%]">Փոխել</a><br>
+				<a href="[% c.uri_for(c.controller.action_for('delete_thing'), [thing.id])%]">Հեռացնել</a>
+			</td>
+			<td>[% thing.type.type %]</td>
+			<td class="thumbnail">
+				[% IF thing.thumb.0.small %]		
+					
+					<img src="[% thing.thumb.0.small %]" medium="[% thing.thumb.0.medium %]" align="left" >
+				
+				[% END %]		
+			</td>
+			<td class="thumbnail">
+				[% IF thing.thumb.1.small %]			
+					<img src="[% thing.thumb.1.small %]" medium="[% thing.thumb.1.medium %]" align="left">
+				[% END %]		
+			</td>
+			<td class="thumbnail">
+				[% IF thing.thumb.2.small %]			
+					<img src="[% thing.thumb.2.small %]" medium="[% thing.thumb.2.medium %]" align="left">
+				[% END %]		
+			</td>
+			<td>[% thing.price %]</td>
+			<td>[% thing.discount %]</td>
+			<td>[% thing.info %]</td>
+	
+		</tr>
+		
+		[% END %]
+	
+</table>
+<br><br><center>
+	<div class="navigation">
+		[% IF pager.next_page %]
+			<a href="[% c.uri_for(c.controller.action_for('show_things'), [col], pager.next_page )%]">Նախորդ տասնյակը</a>
+		[% END %]
+		&nbsp;	&nbsp;	&nbsp;
+		[% IF pager.previous_page %]
+			<a href="[% c.uri_for(c.controller.action_for('show_things'), [col], pager.previous_page )%]">Հաջորդ տասնյակը</a>
+		[% END %]
+	</div></center>
+[% ELSE %]
+	
+	[% obj_col.collection %]&nbsp;Հավաքածուն դատարկ է,<br>
+	
+[% END %]
+

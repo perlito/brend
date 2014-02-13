@@ -1,0 +1,51 @@
+[% META title="Добавить/изменить пользователя" %]
+
+<form method="post" action="[% c.uri_for(uri) %]" id="user_form">
+
+	<div id="user_main">	
+		<label>Логин</label><br>
+		<input type="text" name="username" size="40">*<br><br>
+		
+		<label>Имя</label><br>
+		<input type="text" name="firtname" size="40"><br><br>
+		
+		<label>Фамилия</label><br>
+		<input type="text" name="lastname" size="40"><br><br>
+		
+		<label>Почта</label><br>
+		<input type="text" name="mail" size="40">*<br><br>
+		
+		<label>Пароль</label><br>
+		<input type="text" name="password" size="40">*<br><br>
+		
+		<label>Подтвердить пароль</label><br>
+		<input type="text" name="retype_pass" size="40">*<br><br>
+		
+		<label>Роль</label>&nbsp;&nbsp;
+		<select name="role">
+			<option value="3">Пользователь
+			<option value="2">Редактор
+			<option value="4">Менеджер магазина			
+		</select>
+		<br><br>
+	</div>
+	
+	<div id="user_additional">
+	
+		<label>Ссылка на facebook</label><br>
+		<input type="text" name="social" size="20"><br><br>	
+		
+		<label>Аватар</label>&nbsp;&nbsp;
+		<input type="file" name="userpic"><br><br>
+		
+		<input type="hidden" value="[% obj_user.id %]">
+		<input type="submit" value="[% submit %]" class="button">
+	</div>
+	
+
+<form>
+<br><br>
+	<div class="form_info">
+		<hr>
+		<i>* Поля помеченые звездочкой обязательны для заполнения!</i>
+	</div>

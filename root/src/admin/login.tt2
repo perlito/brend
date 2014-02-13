@@ -1,0 +1,24 @@
+
+
+<script type="text/javascript"></script>
+
+<div id="login" style="margin: 100 auto;">
+<form method='post' action="[% c.uri_for('/login/admin') %]">
+	
+	<label>Անուն</label><br />
+	<input type="text" name="username"><br />
+	 
+	
+	<label>Գաղտնաբառ</label><br />
+	<input type="password" name="password"><br />
+		
+	<div id="login_error" class="red">
+		[% IF count > 2 %]
+		[% count %]
+			Ինչ որ բան սխալ եք ներմուծել
+		[% END %]
+	</div><br />
+	
+	<input type="submit" value="Մուտք">
+</form>
+</div>

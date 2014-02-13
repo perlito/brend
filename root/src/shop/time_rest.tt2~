@@ -1,0 +1,25 @@
+[% till = active_till - now %]
+[% IF till > 0 %]
+
+	[% day = till div 86400 %]
+	[% day_rest = till mod 86400 %]
+	[% hour = day_rest div 3600 %]
+	[% hour_rest = day_rest mod 3600 %]
+	[% minute = hour_rest div 60 %]
+	[% minute_rest = hour_rest mod 60 %]
+	[% second = minute_rest mod 60 %]
+
+		[% IF day > 0 %]
+			[% day %] օր 
+		[% END %]
+		
+		[% IF hour > 0 %]
+			[% hour %] ժամ 
+		[% END %]
+		
+		[% IF minute > 0 %]	
+			[% minute %] րօպե 
+		[% END %]
+		[% second %] վայրկյան
+
+[% END %]

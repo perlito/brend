@@ -1,0 +1,20 @@
+<link rel="stylesheet" type="text/css" href="[% c.uri_for('static','css', 'shop.css') %]"/> 
+
+[% PROCESS shop/menu.tt2 %]
+
+<div class="shop_content">
+	[% FOREACH collection IN shop.collections %]
+		[% IF collection.discount.discount %]
+		[% collection.discount.discount %]% զեղչ 
+			<a href="[% c.uri_for(c.controller.action_for('thing'), [collection.things.first.id] )%]">[% collection.collection %]</a>
+			 համար,  
+				[% IF collection.discount.active_till %]<span>մնաց
+					[% active_till = collection.discount.active_till %]
+					[% PROCESS shop/time_rest.tt2 %]
+					 </span>
+					
+					[% END %]<br>	
+		[% END %]
+	[% END %]
+	
+</div>

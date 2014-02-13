@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>  [% title %] | Brend.am - հագուստի մասին  </title>
+		<meta charset="utf8"/>
+		<link rel="stylesheet" type="text/css" href="[% c.uri_for('static','css', 'home.css') %]"/> 
+		
+		
+		<script type="text/javascript" src="[% c.uri_for('static', 'javascript', 'jquery.js') %]" ></script>
+		<script type="text/javascript" src="[% c.uri_for('static', 'javascript', 'home.js')%]"></script>
+		
+	</head>
+	<body>
+	<a href="[% c.uri_for('/')%]">
+	<div id="logo">
+	Brend.am
+
+	</div>
+	</a>	
+
+	<nav>
+		<ul>
+			<li>Նորություններ
+			<div class="second_menu_container">
+				
+				<div class="second_menu">
+					[% FOREACH rubric IN rubrics %]
+						<a href="[% c.uri_for(c.controller.action_for('rubric'), rubric.id, 1 ) %]">[% rubric.rubric %]</a> 					
+					[% END %]	
+				</div>
+				
+			</div>
+								
+					
+			</li>
+			[% FOREACH type IN types %]
+			[% IF type.shops %]
+				<li>		[% type.type %]
+					<div class="second_menu_container">			
+						<div class="second_menu">			
+								
+								[% FOREACH shop IN type.shops %]
+									<a href="[% c.uri_for(c.controller.action_for('shop'), shop.alias ) %]">[% shop.shop %]</a>
+								[% END %]
+										
+						</div>				
+					</div>				
+				</li>
+				[% END %]
+			[% END %]
+	
+				<form id="search" method="post" action="[% c.uri_for('search') %]">
+					<input type="text" name="search" id="search_field">&nbsp;&nbsp;
+					<input type="image"  src="[% c.uri_for('static', 'images', 'icons', 'search.png' ) %]" id="search_image">				
+				</form>			
+				
+		</ul>
+		<br><br>
+		<div id="experimental">
+		
+			
+				<input type="file" name="file"><br>
+				<button type="button" id="ajax_but">send</button>	
+			
+			<div id="response"></div>
+			
+			<script type="text/javascript" >
+				$(function(){
+					$('#ajax_but').click(function(){
+						
+						$.post('[% c.uri_for('ajax') %]',{ file: $('input[name=file]').val() },
+						 function(data){
+							$('#response').append(data);						
+						});				
+					});				
+				});
+			</script>
+			
+		</div>
+		</div>
+	
+	</nav>
+
+	<section>
+		[% content %]
+	</section>
+
+	<div class="clear"></div>
+	<footer>
+
+		[% FOREACH type IN types %]
+			[% IF type.shops %]
+				<ul class="footer_links">
+					<div>[% type.type %]</div>
+					
+					[% FOREACH shop IN type.shops %]	
+						<li><a href="[% c.uri_for(c.controller.action_for('shop'), shop.alias ) %]">[% shop.shop %]</a></li>
+					[% END %]		
+				</ul>
+			[% END %]		
+			
+		[% END %]<div class="clear"></div>
+		[% IF adds.counter %]
+		<center>[% adds.counter %]</center>
+		[% END %]
+		<center>Copyright &copy; <a href="http://facebook.com/tiko.svyazist" target="_blank" >Me</a><center>
+	</footer>
+</body>
+</html>

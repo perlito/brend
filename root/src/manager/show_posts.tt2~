@@ -1,0 +1,36 @@
+<center><a href="[% c.uri_for_action('manager/add_post') %]">Ավելացնել գրառում</a></center>
+[% IF  posts > 0 %]
+<table>
+	<tr><th>Գրառում</th><th>Նկար</th><th>Վերջին փոփոխությունը</th></tr>
+	[% WHILE (post = posts.next) %]
+		<tr>
+			<td>
+				[% post.header %]<br>
+				<a href="[% c.uri_for(c.controller.action_for('edit_post'), [post.id]) %]">Փոխել</a>&nbsp;&nbsp;&nbsp;
+				<a href="[% c.uri_for(c.controller.action_for('delete_post'), [post.id]) %]">Հեռացնել</a>
+			</td>
+			<td>
+				[% IF post.thumbnail %]
+					<img src="[% post.thumbnail %]" width="70" height="70" >
+				[% END %]
+			</td>
+			<td>
+				[% post.date %]
+			</td>
+		</tr>
+	[% END %]
+</table>
+<br><br>
+<center>
+	<div class="navigation">
+		[% IF pager.next_page %]
+			<a href="[% c.uri_for(c.controller.action_for('show_posts'),  pager.next_page )%]">Նախորդ գրառումները</a>
+		[% END %]
+		&nbsp;	&nbsp;	&nbsp;
+		[% IF pager.previous_page %]
+			<a href="[% c.uri_for(c.controller.action_for('show_posts'),  pager.previous_page )%]">Հաջորդ գրառումները</a>
+		[% END %]
+	</div></center>
+[% ELSE %]
+	Գրառումներ դեռ չկան
+[% END %]

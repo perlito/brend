@@ -1,0 +1,145 @@
+<link rel="stylesheet" type="text/css" href="[% c.uri_for('static','css', 'moving_boxes.css') %]"/>
+<script type="text/javascript" src="[% c.uri_for('static', 'javascript', 'plugins', 'moving_boxes', 'slider.js') %]" ></script>
+
+    <div id="wrapper">
+	
+	
+    
+        <div id="slider">    
+
+            <img class="scrollButtons left" src="[% c.uri_for('/static/javascript/plugins/moving_boxes/images/leftarrow.png') %]">
+
+			<div style="overflow: hidden;" class="scroll">
+	
+				<div class="scrollContainer">
+	
+	              <div class="panel" id="panel_1">
+						<div class="inside">
+							<a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.4.id] )%]">
+							<img src="[% top_posts.4.thumbnail %]" alt="picture" />
+							</a>
+							<h2><a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.4.id] )%]">[% top_posts.4.header %]</a></h2>							
+						</div>
+					</div>
+
+	                <div class="panel" id="panel_2">
+						<div class="inside">
+							 <a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.2.id] )%]">
+							  <img src="[% top_posts.2.thumbnail %]" alt="picture" />
+							</a>
+							<h2><a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.2.id] )%]">[% top_posts.2.header %]</a></h2>
+						</div>
+					</div>
+				
+	                <div class="panel" id="panel_3">
+						<div class="inside">
+							<a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.0.id] )%]">
+								<img src="[% top_posts.0.thumbnail %]" alt="picture" />
+							</a>
+							<h2><a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.0.id] )%]">[% top_posts.0.header %]</h2>
+							
+						</div>
+					</div>
+					
+					<div class="panel" id="panel_4">
+						<div class="inside">
+							<a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.1.id] )%]">
+							<img src="[% top_posts.1.thumbnail %]" alt="picture" />
+							</a>
+							<h2><a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.1.id] )%]">[% top_posts.1.header %]</a></h2>						
+						</div>
+					</div>
+					
+					<div class="panel" id="panel_5">
+						<div class="inside">
+							<a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.3.id] )%]">
+							<img src="[% top_posts.3.thumbnail %]" alt="picture" />
+							</a>
+							<h2><a href="[% c.uri_for(c.controller.action_for('post'), [top_posts.3.id] )%]">[% top_posts.3.header %]</a></h2>						
+						</div>
+					</div>
+					
+
+				
+                </div>
+
+            </div>
+
+			<img class="scrollButtons right" src="[% c.uri_for('/static/javascript/plugins/moving_boxes/images/rightarrow.png') %]">
+
+        </div>
+ 
+    </div>       
+
+
+<div id="second_part">
+
+	<div id="news" >
+		<div class="article">
+		<label><b>Վերջին թարմացումներ</b></label>
+		<hr class="label">
+			<ul>
+			  [% FOREACH post IN new_posts %]
+			  	<li><a href="[% c.uri_for(c.controller.action_for('post'), [post.id]) %]">[% post.header%]</a></li>
+			  [% END %]
+			</ul>
+		</div>
+	</div>
+
+	<div id="shops_info">
+		<div class="article">
+			<label><b>Զեղչեր</b></label>
+			<hr class="label">
+				<ul>
+					[% FOREACH discount IN discounts %]
+					<li><a href="[% c.uri_for(c.controller.action_for('thing'), discount.collection.things.id )%]">[% discount.discount %]% Զեղչ [% discount.shop.shop %] խանութում </a> </li>
+					[% END %]
+				</ul>
+		</div>
+		<div  class="article">
+			<label><b>Նոր հավաքածուներ</b></label>
+			<hr class="label">
+			<ul>
+				[% FOREACH collection IN new_collections %]
+					<li><a href="[% c.uri_for(c.controller.action_for('thing'), collection.things.0.id )%]">Նոր հավաքածու [% collection.shop.shop %] խանութում </a></li>	
+				[% END %]
+			</ul>
+		</div>
+		
+		<div class="article">
+			<label><b>Բլոգներ</b></label>
+					<hr>
+			<ul>
+				[% FOREACH post IN blog_posts %]
+					<li><a href="[% c.uri_for(c.controller.action_for('shop_post'), post.id )%]">[% post.header %]</a></li>
+				[% END %]
+			</ul>
+		</div>
+	</div>
+	
+	<div id="adds" >
+		[% IF adds.social %]
+			<div class="article">
+			<h1>Մենք սոցցանցերում</h1><hr class="label">
+				[% adds.social %]
+			</div>
+		[% END %]
+		[% IF adds.add1 %]
+		<div class="article">
+			[% adds.add1 %]
+		</div>
+		[% END %]
+		[% IF adds.partner %]
+		<div class="article">
+			<h1>Գործընկեր</h1><hr class="label">
+			[% adds.partner %]
+		</div>
+		[% END %]
+	</div>
+	<br>
+	<div class="clear"></div>
+</div>
+
+
+
+

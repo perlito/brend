@@ -1,0 +1,124 @@
+<script type="text/javascript" src="[% c.uri_for('..', 'static', 'javascript', 'manager', 'zoomik.js' )%]"></script>
+<script type="text/javascript" >
+	$(function(){
+		$('form').submit(function(){
+			
+			// Check for thumbnails
+			var $thumb = $('.thumbnail');
+			if ( $thumb.length == 0 ) {
+				var $src = new Array();
+				$('input[type=file]').each(function(){
+					if($(this).val() != ""){
+					$src.push($(this).val());
+					}				
+				});
+				if( $src.length == 0 ) {
+					$('form').append("<span class='red'>Ապրանքը պետք է գոնե մեկ նկար ունենա</span>");
+					return false;
+				}					 		  					
+			}
+		
+			// Check for type
+			if ($('select').val() == 0 ) {
+				$('#select_error').html("<span class='red'>Ընտրեք ապրանքի տեսակը</span>");
+					return false;			
+			}
+			
+			return true;		
+		});	
+	});
+</script>
+<div id="edit_thing">
+<form action="[% c.uri_for(uri) %]" method="post" enctype="multipart/form-data">
+
+	<div id="edit_thing_pics">
+	<label>Ապրանքի Նկարները</label><br>
+	
+		<div class="edit_thing_image">
+						[% IF obj_thing.thumb.0.small %]
+			<div class="thumbnail">
+
+					<img src="[% obj_thing.thumb.0.small %]" medium="[% obj_thing.thumb.0.medium %]" align="left">
+					<input type="hidden" name="thumbnail0" value="[% obj_thing.thumb.0.id %]">
+
+			</div>
+			[% END %]<br>			
+			<input type="file" name="pic0">
+			
+			<br><br>
+			<hr>
+		</div>
+		<br>
+		<div class="edit_thing_image">
+			[% IF obj_thing.thumb.1.small %]
+			<div class="thumbnail">
+		
+					<img src="[% obj_thing.thumb.1.small %]" medium="[% obj_thing.thumb.1.medium %]" align="left">
+					<input type="hidden" name="thumbnail1" value="[% obj_thing.thumb.1.id %]">
+		
+			</div>
+				[% END %]			
+			<br>
+			<input type="file" name="pic1"><br><br>
+			<hr>
+		</div>
+		<br>
+		<div class="edit_thing_image">
+			[% IF obj_thing.thumb.2.small %]
+			<div class="thumbnail">
+
+					<img src="[% obj_thing.thumb.2.small %]" medium="[% obj_thing.thumb.2.medium %]" align="left">
+					<input type="hidden" name="thumbnail2" value="[% obj_thing.thumb.2.id %]">
+
+			</div>
+			[% END %]			
+			<br>
+			<input type="file" name="pic2">
+		</div>
+	
+	
+	</div>
+	
+	<div id="things_basic_info">
+	<label>Գինը</label><br>
+	<input type="text" value="[% obj_thing.price %]" name="price"><br>
+	
+	<br>
+	
+	<label>Զեղջ(%) կամ զեղջված գինը </label><br>
+	<input type="text" value="[% obj_thing.discount %]" name="discount"><br>
+	
+	<br>
+	
+	<label>Տեսակը</label><br>
+	<select name="type" id="type">
+		[% IF obj_thing.type.type %]
+			<option selected value="[% obj_thing.type.id %]">[% obj_thing.type.type %]
+		[% ELSE %]
+			<option selected value="0">Ընտրել
+		[% END %]
+		[% FOREACH type IN types %]
+			<option value="[% type.id %]">[% type.type %]
+		[% END %]
+	</select>
+	<div id="select_error"></div><br>
+	</div>
+	
+	
+	<hr style="clear:both">
+	<br>
+	
+	<label>Հավելյալ տեղեկություններ</label><br>
+	<textarea name="thing_info" placeholder="Մուտքագրեք տեղեկություններ ապրանքի մասին" rows="5" cols="60">[% obj_thing.info %]</textarea>
+	
+	<br>
+	<br>
+	<input type="hidden" name="referer" value="[% ref %]">
+	<input type="hidden" name="collection_id" value="[% obj_col.id %]">
+	<input type="hidden" name="thing_id" value="[% obj_thing.id %]">
+	
+
+	<input type="submit" value="[% button %]">
+	
+</form>
+</div>

@@ -1,0 +1,55 @@
+<script type="text/javascript">
+	$(function(){
+		$('form').submit(function(){
+			
+			if ( !$('input[name=discount]').val()){
+				$('#discount_error').html("<span class='red'>Զեղչը նշեք</span>");
+				return false;			
+			}
+			if ( $('select').val() == 0 ) {
+				$('#type_error').html("<span class='red'>Նշեք տեսակը</span>");
+				return false;			
+			}
+
+			return true;		
+		});	
+	});
+</script>
+<form method="post" action="[% c.uri_for(uri) %]" enctype="multipart/form-data">
+	
+	<label>Զեղչ</label>
+	<input type="text" name="discount" value="[% obj_discount.discount%]"><div id="discount_error"></div>
+	
+	Զեղչի տեսակը <div id="type_error"></div>
+	<select name="discount_type">
+
+		<option selected value="0">
+		<option value="1">Ֆիքսված տոկոս ամբողջ հավաքածուի համար
+		<option value="2">Զեղչի միջակայք(օր․՝ 30-50%)
+	</select>
+
+	<div id="discount_collections">
+
+		[% FOREACH col IN c.user.shop.collections %]
+			
+			<input type="radio" name="collection" value="[% col.id %]" [% IF obj_discount.collection.id == col.id %]checked [% END %] >
+				[% col.collection %]<br>
+		[% END %]
+	</div><div id="col_error"></div>
+		
+	
+	[% IF obj_discount.active_till %]
+		[%	
+			rest = obj_discount.active_till - now
+			till = rest div 86400  
+		%]
+	[% END %]
+	[% IF till > 0 %]
+		[% til = till %]
+	[% END %]
+	<label>Գործում է </label><br>
+	<input type="text" name="active_till" value="[% til  %]">օր<br>
+	
+	<input type="hidden" name="obj_discount" value="[% obj_discount.id %]">
+	<input type="submit" value="[% button %]">
+</form>

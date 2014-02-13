@@ -1,0 +1,3 @@
+[% META title="admin" %]
+[% c.user.roles %]<br />
+[% c.user.username %]

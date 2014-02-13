@@ -1,0 +1,15 @@
+<div class="shop_menu horizontal">
+	<a href="[% c.uri_for(c.controller.action_for('shop'), [shop.alias]) %]" class="shop_name" >
+	<div class="shop_name">
+		
+		<h1>[% shop.shop %]</h1>
+		
+	</div>
+	</a>
+	<ul>
+		<li><a href="[% c.uri_for(c.controller.action_for('show_collections'), [shop.id] )%]">Հավաքածուներ</a></li>
+		<li><a href="[% c.uri_for(c.controller.action_for('shop_blog'), [shop.id], 1 )%]">Բլոգ</a></li>
+		<li><a href="[% c.uri_for(c.controller.action_for('shop_discounts'), [shop.id] )%]">Զեղչեր</a></li>
+		<li><a href="[% c.uri_for(c.controller.action_for('shop_info'), [shop.id] )%]">Մեր մասին</a></li>
+	</ul>
+</div>

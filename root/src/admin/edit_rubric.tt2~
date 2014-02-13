@@ -1,0 +1,19 @@
+[% META title="Добавить/Изменить рубрику" %]
+
+<form method="post" action="[% c.uri_for(uri) %]">
+	
+	<input type="text" name="rubric" placeholder="Введите имя рубрики" size="50" value="[% rubric %]"><br /><br />
+	<input type="hidden" name="id" value="[% id %]">
+	Родительская рубрика<br />	
+	<select name="parent">
+		<option value="0">Нет
+		[% FOREACH rubric IN rubrics %]
+			<option value="[% rubric.id %]">[% rubric.rubric %]
+		[% END %]
+		[% IF parent %]
+		<option selected value="[% parent %]">[% parent_rubric.rubric %]
+		[% END %]
+	</select>
+	<br />
+	<input type="submit" value="[% submit %]" class="button">
+</form>

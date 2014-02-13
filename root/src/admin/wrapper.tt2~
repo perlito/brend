@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>[% template.title %]</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="[% c.uri_for('admin', 'style.css') %]" />
+</head>
+<body>
+	<header>
+		
+	</header>
+	
+	<nav>
+	
+	</nav>
+	
+	<section>
+		[% content %]
+	</section>
+	
+	<footer>
+			
+	</footer>
+</body>
+</html>

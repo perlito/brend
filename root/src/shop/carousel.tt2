@@ -1,0 +1,17 @@
+
+<div class="carousel">
+			[% FOREACH thing IN things %]
+			
+				[% IF thing.thumb.0.small %]
+					<a href="[% c.uri_for(c.controller.action_for('thing'), [thing.id]) %]"><img src="[% thing.thumb.0.small %]"></a>
+							
+				[% ELSIF thing.thumb.1.small %]
+					<a href="[% c.uri_for(c.controller.action_for('thing'), [thing.id]) %]"><img src="[% thing.thumb.1.small %]"></a>
+				[% ELSIF thing.thumb.2.small %]
+					<a href="[% c.uri_for(c.controller.action_for('thing'), [thing.id]) %]"><img src="[% thing.thumb.2.small %]"></a>
+				
+				[% END %]
+				
+			[% END %]
+</div>
+

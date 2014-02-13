@@ -1,0 +1,55 @@
+package brend::Controller::Shop;
+use Moose;
+use namespace::autoclean;
+
+BEGIN { extends 'Catalyst::Controller'; }
+
+=head1 NAME
+
+brend::Controller::Shop - Catalyst Controller
+
+=head1 DESCRIPTION
+
+Catalyst Controller.
+
+=head1 METHODS
+
+=cut
+
+
+=head2 index
+
+=cut
+
+sub index :Path :Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->response->body('Matched brend::Controller::Shop in Shop.');
+}
+
+sub base :Chained('/') :PathPart('shop') :CaptureArgs(1) {
+	my ($self, $c, $id ) = @_;
+
+	$c->stash->{shop} = $c->model('DB::Shop')->find({ id => $id });
+
+}
+
+sub show_collections :Chained('base') :PathPart('show_collections') :Args(0) {
+	my ($self, $c ) = @_;
+	
+	$c->stash(template => 'shop/collections.tt2' );
+}
+=head1 AUTHOR
+
+Tigran,,,
+
+=head1 LICENSE
+
+This library is free software. You can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
+__PACKAGE__->meta->make_immutable;
+
+1;

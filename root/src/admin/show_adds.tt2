@@ -1,0 +1,22 @@
+[% META title="Show Adds "%]
+<form method="post" action="[% c.uri_for('create_adds') %]">
+<center>
+	<input type="text" name="alias" placeholder="Add alias" size="28"><br>
+	<textarea name="add"  cols="41" rows="6" placeholder="Add text"></textarea><br>
+	<input type="submit" value="Добавить">
+</center>
+</form>
+<br><br>
+<table>
+	<tr><th>Alias</th><th>Add</th></tr>
+	[% FOREACH add IN adds %]
+		<tr>
+			<td>
+				[% add.alias %]<br>
+				<a href="[% c.uri_for(c.controller.action_for('delete_add'), [add.id] ) %]">Удалить</a><br>
+				<a href="[% c.uri_for(c.controller.action_for('edit_add'), [add.id] ) %]">Изменить</a>
+			</td>
+			<td>[% add.adds %]</td>
+		</tr>
+	[% END %]
+</table>

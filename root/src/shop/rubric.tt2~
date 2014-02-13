@@ -1,0 +1,3 @@
+[% WHILE (post = posts.next )%]
+[% post.header %]<br>
+[% END %]

@@ -1,0 +1,71 @@
+<link rel="stylesheet" type="text/css" href="[% c.uri_for('static', 'css',  'cloud-zoom.css') %]"/> 
+<script type="text/javascript" src="[% c.uri_for('../static/javascript/plugins/single_thing.js')%]"></script>
+<script type="text/javascript" src="[% c.uri_for('../static/javascript/plugins/cloud-zoom.1.0.2.js')%]"></script>
+
+
+<div class="single_thing">
+		<div class="thing_thumbs">
+		
+				[% IF thing.thumb.0.medium %]
+					<a class="cloud-zoom" href="[% thing.thumb.0.big %]" id='zoom1' rel="position: 'right', adjustX: 10, adjustY: 0"> 
+						<img src="[% thing.thumb.0.medium %]" alt="" width="300" height="400" />
+					</a>
+				[% ELSIF thing.thumb.1.medium %]
+					<a class="cloud-zoom" href="[% thing.thumb.1.big %]" id='zoom1' rel="position: 'right', adjustX: 10, adjustY: 0"> 
+						<img src="[% thing.thumb.1.medium %]" alt="" width="300" height="400" />
+					</a>
+				[% ELSE %]	
+					<a class="cloud-zoom" href="[% thing.thumb.2.big %]" id='zoom1' rel="position: 'right', adjustX: 10, adjustY: 0"> 
+						<img src="[% thing.thumb.2.medium %]" alt="" width="300" height="400" />
+					</a>
+				[% END %]
+				
+				<ul>
+					[% IF thing.thumb.0.small %]
+					<li>
+						<a class="cloud-zoom-gallery" href="[% thing.thumb.0.big %]" title='' rel="useZoom: 'zoom1', smallImage: '[% thing.thumb.0.medium %]'">
+							<img src="[% thing.thumb.0.small %]" alt="" width="60" height="80" />
+						</a>
+					</li>
+					[% END %]
+					[% IF thing.thumb.1.small %]
+					<li>
+						<a class="cloud-zoom-gallery" href="[% thing.thumb.1.big %]" title='' rel="useZoom: 'zoom1', smallImage: '[% thing.thumb.1.medium %]'">
+							<img src="[% thing.thumb.1.small %]" alt="" width="60" height="80" />
+						</a>
+					</li>
+					[% END %]
+					[% IF thing.thumb.2.small %]
+					<li>
+						<a class="cloud-zoom-gallery" href="[% thing.thumb.2.big %]" title='' rel="useZoom: 'zoom1', smallImage: '[% thing.thumb.2.medium %]'">
+							<img src="[% thing.thumb.2.small %]" alt="" width="60" height="80" />
+						</a>
+					</li>
+					[% END %]
+				</ul>
+				
+	</div>
+
+	<div class="thing_info">
+		Խանութը։ <a href="[% c.uri_for(c.controller.action_for('shop_info'), [thing.shop.id]) %]">[% thing.shop.shop %]</a><br>
+		[% IF thing.discount  %]
+			Գինը։ <strike>[% thing.price %]</strike> դր<br>
+			[% IF thing.discount > 100 %]
+				Նոր գին։ <span class="red">[% thing.discount %]</span><br>
+			[% ELSE %]
+				Զեղչ։ [% thing.discount %]%<br>
+			[% END %]
+			
+		[% ELSIF thing.price %]
+			Գինը։ [% thing.price %]<br>
+		[% END %]
+		
+		[% IF thing.type.type %]
+			Տեսակը։ <a href="#">[% thing.type.type %]</a><br>
+		[% END %]
+		[% IF thing.info %]
+			<hr><br> [% thing.info %]
+		[% END %]
+	</div>
+	
+</div>

@@ -1,0 +1,39 @@
+[% META title="Добавить магазин" %]
+
+<form method="post" action="[% c.uri_for(uri) %]" >
+	<label>Магазин</label><br>
+	<input type="text" name="shop" size="40" value="[% obj_shop.shop %]" class="not_empty"><br>
+	<div class="empty_error red"></div><br>
+	
+	<label>Срок</label><br>
+	<input type="text" name="active_till" value="[% obj_shop.active_till %]" size="40" class="numeric"><br>
+	<div class="num_error red"></div><br>
+	
+	<label>Телефон</label><br>
+	<input type="text" name="phone" value="[% obj_shop.phone %]" size="40"><br><br>
+	
+	<label>Почта</label><br>
+	<input type="text" name="mail" value="[% obj_shop.contact_mail %]" size="40" class="mail"><br>
+	<div class="mail_error red"></div><br>	
+	
+	<label>Тип магазина</label><br>
+	<select name="type">
+		[% FOREACH type IN types%]
+		<option value="[% type.id %]">[% type.type %]
+		[% END %]
+		[% IF obj_shop.type.type %]
+			<option selected value="[% obj_shop.type.id %]">[% obj_shop.type.type %]
+		[% ELSE %]
+			<option selected value="0">
+		[% END %]
+	</select>
+	
+	
+	<label>Alias</label><br>
+	<input type="text" name="alias" size="40" value="[% obj_shop.alias %]" class="latin not_empty"></br>
+	<div class="latin_error red"></div><br>	
+	
+	<input type="hidden" value="[% obj_shop.id %]" name="id"> 
+	<input type="submit" value="[% button %]">
+	[% now %]
+</form>

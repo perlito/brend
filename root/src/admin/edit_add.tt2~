@@ -1,0 +1,8 @@
+[% META title="Edit Add" %]
+
+<form action="[% c.uri_for()%]" method="post">
+	<input type="text" name="alias" value="[% obj_add.alias %]" size="28"><br><br>
+	<textarea name="add" cols="41" rows="5">[% obj_add.adds %]</textarea><br>
+	<input type="submit" value="Изменить">
+	<input type="hidden" value="[% obj_add.id %]" name="id">
+</form>

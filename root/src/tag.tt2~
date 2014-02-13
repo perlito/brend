@@ -1,0 +1,28 @@
+
+<center>[% tag.tag %] թեգով՝</center>
+
+<div class="curled left half">
+		<b>Կայքում</b><br>
+		<hr class="label">
+		<ul class="search-results">
+	
+		[% FOREACH post IN tag.posts %]
+			<li>
+				<a href="[% c.uri_for(c.controller.action_for('post'), post.id )%]">[% post.header %]</a>
+			</li>
+		[% END %]	
+	</ul>
+</div>
+
+<div class="curled left half">
+
+	Բլոգներում
+	<hr class="label">
+		<ul class="search-results">
+	[% FOREACH post IN tag.blogs %]
+		<li>
+			<a href="[% c.uri_for(c.controller.action_for('shop_post'), post.id ) %]" >[% post.header %]</a>
+		</li>
+	[% END %]	
+</ul>
+</div>

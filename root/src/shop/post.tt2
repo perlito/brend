@@ -1,0 +1,27 @@
+<link rel="stylesheet" type="text/css" href="[% c.uri_for('static','css', 'shop.css') %]"/> 
+
+[% PROCESS shop/menu.tt2 %]
+
+
+<div class="shop_content">
+	<h1>[% post.header %]</h1>
+	<br>
+	<div class="shop_post">
+		[% IF post.thumbnail %]
+		<img src="[% post.thumbnail %]">
+		[% END %]
+		[% post.post %]<br>
+		<div class="post_date">
+			[% post.date %]
+		</div>
+		<br>
+	<div class="tags">
+		Թեգեր։
+		[% FOREACH tag IN post.tags %]
+		
+		<a href="[% c.uri_for(c.controller.action_for('tag'), tag.id) %]">[% tag.tag %]</a>, &nbsp;&nbsp;&nbsp;
+		[% END %]
+	</div>
+	</div>
+	
+</div>

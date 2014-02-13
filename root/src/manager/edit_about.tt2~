@@ -1,0 +1,36 @@
+<form method="post" enctype="multipart/form-data" action="[% c.uri_for('edit_about_do') %]">
+	
+	
+	<label>Խանութի կամ բրենդի մասին</label><br>
+	<textarea id="about_brend" cols="80" rows="25" name="brend_info">[% shop.info %]</textarea><br><hr><br>
+	
+	<label>Խանութի կամ բրենդի լոգոն</label><br>
+	<input type="file" name="logo"><br>
+	<div id="brend_logo">
+		[% IF shop.logo %]
+			<img src="[% shop.logo %]" width="200" height="200">
+		[% END %]	
+	</div>
+	
+	<label>Էլեկտոնային հասցե</label><br>
+	<input type="text" name="mail" size="40" value="[% shop.contact_mail%]"><br>
+
+	<label>Կայք</label><br>
+	<input type="text" name="site" size="40" value="[% shop.site %]"><br>	
+	
+	<label>Հեռախոս</label><br>
+	<input type="text" name="phone" size="40" value="[% shop.phone %]"><br>
+	
+	<label>facebook հասցե Like Page iframe</label><br>
+	
+	<textarea type="text" name="social" cols="40" rows="8">[% shop.social %]</textarea><br>
+	
+	<label>Հասցե</label><br>
+	<input type="text" name="address" size="40" value="[% shop.address %]"><br>
+	
+	<label>Բրենդի արտադրման երկիրը</label><br>
+	<input type="text" name="country" size="40" value="[% shop.country %]"><br>
+	
+	<input type="submit" value="Փոխել">
+	
+</form>

@@ -1,0 +1,20 @@
+<div id="sidebar">
+	<div id="last_news" class="horizontal">
+		<label>Նորություններ</label>
+		<hr class="label">
+		<ul>
+			[% FOREACH post IN posts %]
+				<li><a href="[% c.uri_for(c.controller.action_for('post'), [post.id]) %]">[% post.header %]</a></li>
+			[% END %]
+		</ul> 	
+	</div>
+	
+	[% IF adds.social %]
+	<div class="horizontal">
+		<b>Մենք սոցցանցերում</b><hr class="label">
+		[% adds.social %]
+	</div>
+	[% END %]
+	
+
+</div>

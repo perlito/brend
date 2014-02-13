@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<title>[% title %]</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="[% c.uri_for('..','static', 'css', 'manager.css')%] " />
+	<script type="text/javascript" src="[% c.uri_for('..', 'static', 'javascript', 'jquery.js') %]"></script>
+</head>
+	<body>
+	
+	<nav>
+		<ul>
+			<li><a href="[% c.uri_for('/') %]" target="_blank">Անցնել կայք</a></li><hr>
+			<li><a href="[% c.uri_for_action('manager/show_collections') %]">Հավաքածուներ</a></li>	
+			<hr>
+			<li><a href="[% c.uri_for_action('manager/edit_about') %]">Մեր մասին</a></li>
+			<hr>
+			<li><a href="[% c.uri_for_action('manager/show_discounts') %]">Զեղջեր</a></li>
+			<hr>
+			<li><a href="[% c.uri_for_action('manager/show_posts') %]/1">Բլոգի գրառումներ</a></li>
+			<li><a href="[% c.uri_for_action('manager/add_post') %]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Նոր գրառում</a></li>
+		
+			<hr>
+			<li><a href="[% c.uri_for('/logout')%]">Ելք</a></li>	
+		</ul>
+	</nav>
+	
+	<header>
+	<div id="meta">
+	Խանութը՝ [% c.user.shop.shop %],&nbsp; 
+	[% delta = active_till - now %]
+	[% months = delta div 2678400 %]
+	Հաշիվն ակտիվ է`&nbsp;
+	
+	[% IF months %]
+	[% IF months > 0 %]
+		[% months %] ամիս
+	[% END %]
+	[% END %]
+	
+	[% ostatok = delta mod 2678400 %]
+	[% days = ostatok div 86400 %]
+
+	[% IF days > 0 %]
+		[% days %] օր
+	[% END %]
+	
+	[% ostatok = ostatok mod 86400 %]
+	[% hours = ostatok div 3600 %]
+	[% IF hours > 0 %]
+		[% hours %] ժամ
+	[% END %]
+	
+		
+	</div>
+	</header>
+	
+	
+	
+	<section>
+	
+
+	
+	[% IF delta > 0 %]
+		[% content %]
+	[% ELSE %]
+		<div id="shop_expired">
+			<h1>Ծառայության մատուցման ժամկետը սպառվել է,<br /> 
+				խնդրում ենք կապնվեք կայքի ադմինիստրացիայի հետ </h1>
+		</div>
+	[% END %]
+	</section>
+	
+	<footer>
+	
+	</footer>
+</body>
+</html>

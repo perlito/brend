@@ -1,0 +1,78 @@
+[% META title="Добавить/изменить пользователя" %]
+
+<script type="text/javascript" src="[% c.uri_for('..', 'static', 'javascript', 'admin', 'edit_user.js') %]" ></script>
+
+<form method="post" action="[% c.uri_for(uri) %]" id="user_form" enctype="multipart/form-data">
+
+	<div id="user_main">	
+		<label>Логин</label><br>
+		<input type="text" name="username" size="40" value="[% obj_user.username %]" >*<br>
+		<div id="username_error" class="red"></div><br>
+		
+		<label>Имя</label><br>
+		<input type="text" name="firtname" size="40" value="[% obj_user.firstname %]"><br><br>
+		
+		<label>Фамилия</label><br>
+		<input type="text" name="lastname" size="40" value="[% obj_user.lastname %]"><br><br>
+		
+		<label>Почта</label><br>
+		<input type="text" name="mail" size="40" value="[% obj_user.mail %]">*<br>
+		<div id="mail_error" class="red"></div><br>
+		
+		<label>Пароль</label><br>
+		<input type="password" name="password" size="40" value="[% obj_user.password %]" >*<br>
+		<div id="pass_error" class="red"></div><br>
+		
+		<label>Подтвердить пароль</label><br>
+		<input type="password" name="retype_pass" size="40" value="[% obj_user.password %]" >*<br><br>
+		
+		<label>Роль</label>&nbsp;&nbsp;
+		<select name="role">
+			[% IF obj_user.role %]
+				<option selected value="[% obj_user.role.id %]">
+					[% IF obj_user.role.id == 4 %]Менеджер магазина
+						[% ELSIF obj_user.role.id == 3 %]Пользователь
+						[% ELSIF obj_user.role.id == 1 %]Администратор
+						[% ELSE %]Редактор
+					[% END %]
+			[% END %]
+			<option value="3">Пользователь
+			<option value="2">Редактор
+			<option value="4">Менеджер магазина
+			<option value="1">Администратор		
+		</select>
+		<br><br>
+		
+		<div id="manager_shop">
+		<label>Магазин менеджера</label><br>
+		<input type="text" name="shop" size="40" value="[% obj_user.shop.shop %]">*<br>
+		<div id="manager_error" class="red"></div><br>
+		</div>
+			
+	</div>
+	
+	<div id="user_additional">
+	
+		<label>Ссылка на facebook</label><br>
+		<input type="text" name="social" size="20" value="[% obj_user.social %]"><br><br>	
+		
+		<label>Аватар</label>&nbsp;&nbsp;
+		<input type="file" name="userpic"><br><br>
+		
+		[% IF obj_user.userpic %]
+	
+			<img class="userpic_big" src="[% obj_user.userpic %]"><br><br>			
+		
+		[% END %]
+		
+		<input type="hidden" value="[% obj_user.id %]" name="user_id">
+		<input type="submit" value="[% submit %]" class="button">
+	</div>
+	
+
+<form>
+<br><br>
+	<div class="form_info">
+		<hr>
+		<i>* Поля помеченые звездочкой обязательны для заполнения!</i>
+	</div>

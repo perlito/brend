@@ -1,0 +1,28 @@
+<center><a href="[% c.uri_for('add_discount') %]">Ավելացնել զեղչ</a></center>
+
+<table>
+	<tr><th>Զեղչ</th><th>Հավաքածու</th><th>Մնաց</th></tr>
+	[% FOREACH discount IN discounts %]
+	<tr>
+		
+		<td>
+			[% discount.discount %]<br>
+			<a href="[% c.uri_for(c.controller.action_for('edit_discount'), [discount.id])%]">Փոփոխել</a><br>
+			<a href="[% c.uri_for(c.controller.action_for('delete_discount'), [discount.id])%]">Հեռացնել</a>	
+		</td>
+		<td>
+			[% discount.collection.collection %]
+		</td>
+		<td>
+		[% IF discount.active_till%]
+			[% 
+				rest = discount.active_till - now	
+			 	till = rest div 86400
+			 %] 
+				[% till %] օր
+			
+			[% END %]
+		</td>
+	</tr>
+	[% END %]
+</table>

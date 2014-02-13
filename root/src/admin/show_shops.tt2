@@ -1,0 +1,39 @@
+[% META title="Магазины" %]
+
+
+
+<table>
+	<tr><th>Магазин</th><th>Менеджер</th><th>Срок</th><th>Телефон</th><th>Почта</th><th>Тип</th><th>Alias</th></tr>
+	[% FOREACH shop IN shops %]
+		<tr>
+			<td>
+				[% shop.shop %]<br>
+				<a href="[% c.uri_for(c.controller.action_for('edit_shop'), [shop.id] )%]">Изменить</a>
+			
+			</td>
+			<td>[% shop.manager.username %]</td>
+			<td>
+				
+				[% 
+					delta1 = shop.active_till - now
+					
+					delta = delta1 mod 2678400
+					days	= delta div 86400
+					delta = delta mod 86400
+					hours = delta div 3600 
+				%]
+				[% shop.active_till %]<br>[% now %]<br>
+				[% days %] Дней и [% hours %] часов<br>
+				<a href="[% c.uri_for(c.controller.action_for('add_month'), [shop.id])%]">Добавить на месяц</a><br>
+				<a href="[% c.uri_for(c.controller.action_for('delete_month'), [shop.id])%]">Убавить на месяц</a>
+			</td>
+			
+			<td>[% shop.phone %]</td>
+			<td>[% shop.contact_mail %]</td>
+			<td>[% shop.type.type %]</td>
+			<td>[% shop.alias %]</td>
+		</tr>
+	[% END %]
+	
+	
+</table>

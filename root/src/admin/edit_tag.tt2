@@ -1,0 +1,11 @@
+[% META title="Редактирование метки" %]
+
+
+
+
+
+<form method="post" action="[% c.uri_for('edit_tag_do') %]">
+	<input type="text" value="[% obj_tag.tag %]" name="tag"><br />
+	<input type="hidden" value="[% obj_tag.id %]" name="id"><br />
+	<input type="submit" value="Изменить" class="button">
+</form>

@@ -1,0 +1,18 @@
+<div id="login" style="margin: 100 auto;">
+<form method='post' action="[% c.uri_for('/login') %]">
+	
+	<label>Անուն</label><br />
+	<input type="text" name="username"><br />
+	 
+	
+	<label>Գաղտնաբառ</label><br />
+	<input type="password" name="password"><br />
+
+	<div id="login_error" class="red">
+		<input type="hidden" name="count" value="[% count+1 %]">
+			
+	</div><br />
+	
+	<input type="submit" value="Մուտք">
+</form>
+</div>

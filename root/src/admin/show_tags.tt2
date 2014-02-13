@@ -1,0 +1,18 @@
+[% META title="Метки" %]
+
+
+<table>
+	[% FOREACH tag IN tags %]
+		<tr>
+			<td>
+				[% tag.id %]
+			</td>
+			<td>		
+				<a href="[% c.uri_for(c.controller.action_for('edit_tag'), [tag.id]) %]">[% tag.tag %]</a>
+			</td>
+			<td>
+				<a href="[% c.uri_for(c.controller.action_for('delete_tag'), [tag.id]) %]">Удалить</a>
+			</td>
+		</tr>	
+	[% END %]
+</table>

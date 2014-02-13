@@ -1,0 +1,5 @@
+<form action="[% c.uri_for('edit_shop_type_do') %]" method="post">
+	<input type="text" name="type" value="[% obj_shop_type.type %]">&nbsp;&nbsp;&nbsp;
+	<input type="hidden" value="[% obj_shop_type.id %]" name="id">
+	<input type="submit" value="Изменить">
+</form>

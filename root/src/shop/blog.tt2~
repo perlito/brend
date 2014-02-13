@@ -1,0 +1,27 @@
+<link rel="stylesheet" type="text/css" href="[% c.uri_for('static','css', 'shop.css') %]"/> 
+
+[% PROCESS shop/menu.tt2 %]
+
+
+<div class="shop_content">
+
+	<ul class="posts">
+		[% WHILE (post = result.next) %]
+			<li><a href="[% c.uri_for(c.controller.action_for('shop_post'), [post.id]) %]">[% post.header %]</a></li>
+		[% END %]
+	</ul>
+
+	<div class="navigation">
+
+		[% IF pager.next_page %]
+			<a href="[% c.uri_for(c.controller.action_for('shop_blog'), [shop.id], pager.next_page )%]">Հաջորդը</a>
+		[% END %]
+		
+		[% IF pager.previous_page %]
+			<a href="[% c.uri_for(c.controller.action_for('shop_blog'), [shop.id], pager.previous_page )%]">Նախորդը</a>
+		[% END %]
+		
+	</div>
+	
+	
+</div>

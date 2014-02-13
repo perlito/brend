@@ -1,0 +1,16 @@
+<form action="[% c.uri_for('add_shop_type') %]" method="post">
+	<input type="text" name="type" placeholder="Введите новый тип">&nbsp;&nbsp;&nbsp;
+	<input type="submit" value="Создать">
+</form>
+<br>
+
+<table>
+	<tr><th>Тип</th><th>Магазинов</th><th>Удалить</th></tr>
+		[% FOREACH type IN types %]
+			<tr>
+				<td><a href="[% c.uri_for(c.controller.action_for('edit_shop_type'), [type.id] )%]">[% type.type %]</a></td>
+				<td>[% type.shops.size %]</td>
+				<td><a href="[% c.uri_for(c.controller.action_for('delete_shop_type'), [type.id] )%]">Удалить</a></td>
+			</tr>
+		[% END %]
+</table>

@@ -1,0 +1,150 @@
+
+
+#wrapper {
+    width: 925px;
+     position:relative;
+   
+        padding:1em;
+ 			margin-top: 20px;
+        background:#fff;
+        border-radius:4px;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+       -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+            box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -moz-border-radius:4px;
+}
+
+#wrapper:after,
+#wrapper:before {
+        content:"";
+        position:absolute;
+        z-index:-2;
+        bottom:15px;
+        left:10px;
+        width:50%;
+        height:20%;
+        max-width:300px;
+    -webkit-box-shadow:0 15px 10px rgba(0, 0, 0, 0.7);
+       -moz-box-shadow:0 15px 10px rgba(0, 0, 0, 0.7);
+            box-shadow:0 15px 10px rgba(0, 0, 0, 0.7);
+    -webkit-transform:rotate(-3deg);
+       -moz-transform:rotate(-3deg);
+        -ms-transform:rotate(-3deg);
+         -o-transform:rotate(-3deg);
+            transform:rotate(-3deg);	
+	}
+#wrapper:after {
+   right:10px;
+    left:auto;
+    -webkit-transform:rotate(3deg);
+       -moz-transform:rotate(3deg);
+        -ms-transform:rotate(3deg);
+         -o-transform:rotate(3deg);
+            transform:rotate(3deg);		
+	}
+
+#intro {
+    padding-bottom: 10px;
+}
+
+#slider {
+    width: 925px;
+    margin: 0 auto;
+    position: relative;
+
+
+
+}
+
+.scroll {
+	overflow: hidden;
+	width: 925px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.scrollContainer {
+	position: relative;
+	margin-left: 55px;
+}
+
+.scrollContainer div.panel {
+    padding: 5px;
+    width: 274px;
+	#height: 418px;
+}
+
+#left-shadow {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 12px;
+	bottom: 0;
+
+}
+
+#right-shadow {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 12px;
+	bottom: 0;
+	background: url(../images/rightshadow.png) repeat-y;
+}
+
+.inside {
+	padding: 10px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0px 0px 7px rgba(50, 50, 50, 0.64);
+	-moz-box-shadow:    0px 0px 7px rgba(50, 50, 50, 0.64);
+	box-shadow:         0px 0px 7px rgba(50, 50, 50, 0.64);
+}
+
+.inside img {
+	display: block;
+	#border: 1px solid #666;
+	margin: 0 0 10px 0;
+	width: 250px;
+}
+
+.inside h2 {
+	font-weight: normal;
+	color: #111;
+	font-size: 16px;
+	margin: 0 0 8px 0;
+}
+
+.inside p {
+	font-size: 11px;
+	color: #ccc;
+}
+
+.inside a {
+	color: black;
+	text-decoration: none;
+	border-bottom: 1px dotted #ccc;
+}
+
+.inside a:hover {
+	border-bottom: 1px solid #999;
+}
+
+.scrollButtons {
+    position: absolute;
+    top: 127px;
+    cursor: pointer;
+}
+
+.scrollButtons.left {
+    left: -60px;
+}
+
+.scrollButtons.right {
+    right: -60px;
+}
+
+.hide {
+    display: none;
+}

@@ -1,0 +1,14 @@
+[% META title="Рубрики" %]
+
+<table id="rubrics">
+	<tr><th>Рубрика</th><th>Изменить</th><th>Удалить</th></tr>
+	[% FOREACH rubric IN rubrics %]	
+	<tr>
+		
+			<td>[% rubric.rubric %]</td>
+			<td></td>
+			<td><a href="[% c.uri_for(c.controller.action_for('delete_rubric'), [rubric.id]) %]">Удалить</a></td>
+		
+	</tr>
+	[% END %]
+</table>

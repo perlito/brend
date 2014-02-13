@@ -1,0 +1,909 @@
+package brend::Controller::Admin;
+use Moose;
+use namespace::autoclean;
+use Image::Magick::Thumbnail::Fixed;
+
+BEGIN { extends 'Catalyst::Controller'; }
+
+=head1 NAME
+
+brend::Controller::Admin - Catalyst Controller
+
+=head1 DESCRIPTION
+
+Catalyst Controller.
+
+=head1 METHODS
+
+=cut
+
+
+=head2 index
+
+=cut
+
+# Set wrapper for admin panel 
+sub begin :Private {
+	my ($self, $c) = @_;
+	 
+	$c->stash( wrapper => 'admin/admin_wrapper.tt2', now => time);
+}
+
+sub auto :Private {
+	my ($self, $c) = @_;
+	
+	if(!$c->user_exists ) {
+		$c->response->redirect($c->uri_for('/login/admin'));	
+	}
+	if ( !$c->check_user_roles('admin') && !$c->check_user_roles('editor') ) {
+		$c->response->redirect($c->uri_for('/login/admin'));
+		$c->log->debug("*** Not admin or editor ***");	
+	} 
+ 	
+	
+	return 1;
+}
+
+sub index :Path :Args(0) {
+    my ( $self, $c ) = @_;
+	
+	 $c->stash( template => 'admin/index.tt2' );	
+
+}
+
+####################################
+#				Post CRUD				  #
+####################################
+
+sub base :Chained('/') :PathPart('admin') :CaptureArgs(0) {
+	my ($self, $c) = @_;
+	
+	$c->log->debug("***Inside base method***");
+}
+
+sub show_posts :Chained('base') :PathPart('show_posts') :Args(0) {
+	my ( $self, $c ) = @_;
+	$c->log->debug("***Inside show_posts method ***");
+
+	$c->stash( 
+		posts => [ ( reverse $c->model('DB::Post')->all()) ], 
+		template => 'admin/show_posts.tt2'		  				
+				); 
+}
+
+
+sub add_post :Chained('base') :PathPart('add_post') :Args(0) {
+	my ( $self, $c ) = @_;
+	
+	$c->stash( 
+		 		
+		template => 'admin/edit_post.tt2',
+		uri => "add_post_do",
+		submit => "Добавить",
+		rubrics => [$c->model('DB::Rubric')->all],
+		thumbnail => 'Добавить миниатюру',
+		);
+}
+
+
+
+sub add_post_do :Chained('base') :PathPart('add_post_do') :Args(0) {
+	my ($self, $c) = @_;
+	
+	# Create post 
+	my $header = $c->request->params->{header};
+	my $post	  = $c->request->params->{post};
+	my $rubric = $c->request->params->{rubric};
+	my $lead   = $c->request->params->{lead};
+	
+	# Uploat thumbnail for this post
+	
+	my $upload = $c->request->upload('thumbnail');
+	my $filename;
+	my $info;
+	if ( $upload ) {	
+	$upload->copy_to('root/static/images');
+	
+   # Get filename of uploaded file, and create corresponding image link
+	$filename = $upload->tempname;
+	$filename =~ s{.+/}{};
+	my $input = "root/static/images/" . $filename;
+	my $output = "root/static/images/thumbnails/post/" . $filename;
+	$c->log->debug("*** Input -> $input ");
+	$c->log->debug("*** Output -> $output ");
+	# Create thumbnail for uploaded image	
+ 	my $t = new Image::Magick::Thumbnail::Fixed;
+ 	
+ 	$t->thumbnail(
+ 					input 	=> $input,
+ 					output	=> $output,
+ 					width		=> 250,
+ 					height	=> 250,
+ 					quality	=> '100',
+ 					gravity	=> 'center'	
+ 					);
+ 					
+
+	# Thumbnail's title	
+	$info = $c->request->params->{image_title};
+	
+
+	
+	# Delete uploaded image
+	my $file = "root/static/images/" . $filename;
+	unlink $file;	
+	}
+	
+	my $created = $c->model('DB::Post')->create({
+		header => $header,
+		post   => $post,
+		lead 	 => $lead,
+		rubric => $rubric,	
+		thumbnail => $c->uri_for('../static/images/thumbnails/post/') . $filename,
+		thumbnail_info => $info,
+	});
+	# Create tags and associate them with posts
+	
+	my $tags = $c->request->params->{tags};
+	
+	my @tags = split /,/, $tags;
+	
+	foreach my $tag (@tags) {
+	
+		# Delete start and end spaces in tags
+		$tag =~ s/^\s*([ \w]+)\s*$/$1/;
+		
+		# If tag doesn't exists - create it
+		my $new_tag = $c->model('DB::Tag')->find_or_new({
+			tag => $tag,		
+		});
+		$new_tag->update_or_insert;
+		
+		# Associate that with post
+		my $tag_id = $new_tag->id;			
+		$created->create_related('post_tags', { tag_id => $tag_id });
+	} 
+	
+	$c->log->debug("*** Post created ***");
+	my $new_id = $created->id();
+	$c->response->redirect($c->uri_for($self->action_for('show_posts')));
+}
+
+# Capture post via id
+sub obj_post :Chained('base') :PathPart('obj_post') :CaptureArgs(1) {
+	my ($self, $c, $id) = @_;
+	
+	
+	$c->stash( obj_post => $c->model('DB::Post')->find({ id => $id }));
+	die "Post with $id not found" unless($c->stash->{obj_post});
+	
+	$c->log->debug("*** Inside obj_post method ***");
+}
+
+# Delete captured post
+sub delete_post :Chained('obj_post') :PathPart('delete_post') :Args(0) {
+	my ($self, $c) = @_;
+	
+	my $link = $c->stash->{obj_post}->thumbnail;
+	my $filename =~ s{.+/}{};
+	$filename = "root/static/images/thumbnail/post" . $filename;
+	unlink $filename;  
+	$c->stash->{obj_post}->delete;
+	$c->log->debug("*** Post deleted ***");
+	$c->response->redirect($c->uri_for($self->action_for('show_posts')));
+}
+
+# Show edit form for captured post
+sub edit_post :Chained('obj_post') :PathPart('edit_post') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->log->debug("*** Inside edit_post method ***");
+	$c->stash(
+		uri => 'edit_post_do',
+		template => 'admin/edit_post.tt2',
+		rubrics => [$c->model('DB::Rubric')->all],
+		submit => 'Изменить',
+		thumbnail => 'Изменить миниатюру',	
+	);
+}
+
+# Edit capured post
+sub edit_post_do :Chained('base') :PathPart('edit_post_do') :Args(0) {
+	my ($self, $c) = @_;
+	
+	# Getting post
+	my $header = $c->request->params->{header};
+	my $post   = $c->request->params->{post};
+	my $lead   = $c->request->params->{lead};
+	my $id 	  = $c->request->params->{id};
+	my $rubric = $c->request->params->{rubric};
+	
+	my $editing = $c->model('DB::Post')->find({ id => $id });
+	
+	# Upload image and create thumbnail 
+	my $upload = $c->request->upload('thumbnail');
+	my $thumb;
+	my $info;
+	if ( $upload ) {	
+	$upload->copy_to('root/static/images');
+	
+   # Get filename of uploaded file, and create corresponding image link
+	my $filename = $upload->tempname;
+	$filename =~ s{.+/}{};
+	my $input = "root/static/images/" . $filename;
+	my $output = "root/static/images/thumbnails/post/" . $filename;
+	$c->log->debug("*** Input -> $input ");
+	$c->log->debug("*** Output -> $output ");
+	# Create thumbnail for uploaded image	
+ 	my $t = new Image::Magick::Thumbnail::Fixed;
+ 	
+ 	$t->thumbnail(
+ 					input 	=> $input,
+ 					output	=> $output,
+ 					width		=> 250,
+ 					height	=> 250,
+ 					quality	=> '100',
+ 					gravity	=> 'center'	
+ 					);
+ 					
+
+	# Thumbnail's title	
+	$info = $c->request->params->{image_title};
+	
+	# Delete uploaded image
+	my $file = "root/static/images/" . $filename;
+	unlink $file;	
+	
+		if ($editing->thumbnail) {
+				my $old =~ s{.+/}{};
+				$old = "root/static/images/thumbnail/post" . $old;
+				unlink $old;  	
+		}
+	$thumb = $c->uri_for('../static/images/thumbnails/post/') . $filename;
+	}	
+	
+	$editing->header($header);
+	$editing->post($post);
+	$editing->lead($lead);
+	$editing->rubric($rubric);
+	$editing->thumbnail($thumb) if $thumb;
+	$editing->thumbnail_info($info);
+	$editing->update;
+	
+	# Create new tags
+	my $tags = $c->request->params->{tags};
+	
+	if ( $tags ) {
+		my @tags = split /,/, $tags;
+		 
+		foreach my $tag (@tags) {
+	
+			# Delete start and end spaces in tags
+			$tag =~ s/^\s*([ \w]+)\s*$/$1/;
+		
+			# If tag doesn't exists - create it
+			my $new_tag = $c->model('DB::Tag')->find_or_new({
+				tag => $tag,		
+			});
+			$new_tag->update_or_insert;
+		
+			# Associate that with post
+			my $tag_id = $new_tag->id;			
+			$editing->create_related('post_tags', { tag_id => $tag_id });
+		}  	
+	} 
+	
+	# Delete old tags(tags that user select)
+	my @del_tags = $c->request->params->{old_tag};
+	
+	for my $del_tag (@del_tags) {
+		$editing->delete_related('post_tags', { tag_id=> $del_tag });	
+	}
+	
+
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_posts')));
+}
+
+####################################
+#				Rubrics CRUD   		  #
+####################################
+
+# Read rubrics
+
+sub show_rubrics :Chained('base') :PathPart('show_rubrics') :Args(0) {
+	my ($self, $c) = @_;
+	$c->stash(
+		rubrics => [ $c->model('DB::Rubric')->all() ],
+		template => 'admin/show_rubrics.tt2'
+	);
+}
+
+# Display create template  
+
+sub add_rubric :Chained('base') :PathPart('add_rubric') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash(
+	template => 'admin/edit_rubric.tt2',
+	uri => "add_rubric_do",
+	submit => "Добавить",
+	rubrics => [$c->model('DB::Rubric')->all]	
+	);	
+}
+
+# Create Rubric
+
+sub add_rubric_do :Chained('base') :PathPart('add_rubric_do') :Args(0) {
+	my ($self, $c) = @_;
+	
+	my $rubric = $c->request->params->{rubric};	#	Getting 
+	my $parent = $c->request->params->{parent};	#
+	
+	$c->model('DB::Rubric')->create({
+		rubric => $rubric,
+		parent => $parent	
+	});
+	$c->log->debug("*** New rubric created ***");
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_rubrics')));
+
+}
+
+# Get Rubric for delete or update
+
+sub obj_rubric :Chained('base') :PathParh('obj_rubric') :CaptureArgs(1) {
+	my ($self, $c, $id) = @_;
+	
+	$c->stash( obj_rubric => $c->model('DB::Rubric')->find({ id => $id }));
+	die "Rubric with $id not found" unless($c->stash->{obj_rubric});
+	
+	$c->log->debug("*** Inside obj_rubric ***");
+}
+
+# Delete rubric
+
+sub delete_rubric :Chained('obj_rubric') :PathPart('delete_rubric') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash->{obj_rubric}->delete;
+	$c->log->debug("*** rubric deleted ***");
+	$c->response->redirect($c->uri_for($self->action_for('show_rubrics')));
+}
+
+# Display edit template
+
+sub edit_rubric :Chained('obj_rubric') :PathPart('edit_rubric') :Args(0) {
+	my ($self, $c) = @_;
+	
+	my $id = $c->stash->{obj_rubric}->id;
+	my $rubric = $c->stash->{obj_rubric}->rubric;
+	my $parent = $c->stash->{obj_rubric}->parent;
+		
+	if ($parent != 0) {
+		$c->stash( parent_rubric => $c->model('DB::Rubric')->find({ id => $parent }))		
+	}
+	$c->stash(
+		template => 'admin/edit_rubric.tt2',
+		id => $id,
+		rubric => $rubric,
+		rubrics => [$c->model('DB::Rubric')->all],	
+		parent => $parent,
+		uri => 'edit_rubric_do',
+		submit => 'Изменить'	
+	);
+}
+
+# Edit rubric
+
+sub edit_rubric_do :Chained('base') :PathPart('edit_rubric_do') :Args(0) {
+	my ($self, $c) = @_;
+	
+	my $rubric = $c->request->params->{rubric};
+	my $parent = $c->request->params->{parent};
+	my $id 	  = $c->request->params->{id};
+	
+	my $row = $c->model('DB::Rubric')->find({id => $id});
+	
+	$row->rubric($rubric);
+	$row->id($id);
+	$row->parent($parent);
+	$row->update;
+	
+	$c->response->redirect( $c->uri_for($self->action_for('show_rubrics'))); 
+}
+
+####################################
+#				Tag CRUD		   		  #
+####################################
+
+sub show_tags :Chained('base') :PatthPart('show tags') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash(
+		tags => [ $c->model('DB::Tag')->all() ],
+		template => 'admin/show_tags.tt2',	
+	);
+}
+
+sub obj_tag :Chained('base') :PathPart('obj_tag') :CaptureArgs(1) {
+	my ($self, $c, $id) = @_;
+	
+	$c->stash( obj_tag => $c->model('DB::Tag')->find({ id => $id }));
+	die "Tag with id $id not found" unless $c->stash->{obj_tag};
+}
+
+sub delete_tag :Chained('obj_tag') :PathPart('delete_tag') :Atgs(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash->{obj_tag}->delete;
+	$c->log->debug("*** Tag deleted ***");
+	$c->response->redirect($c->uri_for($self->action_for('show_tags')));
+}
+
+sub edit_tag :Chained('obj_tag') :PathPart('edit_tag') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash(
+		template => 'admin/edit_tag.tt2',	
+	); 
+	$c->log->debug("*** Inside edit_tag method ***");
+}
+
+sub edit_tag_do :Chained('base') :PathPart('edit_tag_do') :Args(0) {
+	my ($self, $c) = @_;
+	
+	my $tag = $c->request->params->{tag};
+	my $id  = $c->request->params->{id};
+	
+	my $editing = $c->model('DB::Tag')->find({ id => $id });
+	$editing->tag($tag);
+	$editing->update;
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_tags'))); 
+}
+
+####################################
+#				Users CRUD	   		  #
+####################################
+
+# Show users and additional information
+sub show_users :Chained('base') :PathPart('show_users') :Args(0) {
+	my ($self, $c) = @_;
+	$c->stash(
+		template => 'admin/show_users.tt2',
+		users 	=> [$c->model('DB::User')->all()]
+	);	
+}
+
+# Display template for add new users
+sub add_user :Chained('base') :PathPart('add_user') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash(
+		template => 'admin/edit_user.tt2',
+		uri 		=>	'add_user_do',
+		submit 	=>	'Добавить'
+		
+	);
+}
+
+# Add new user
+sub add_user_do :Chained('base') :PathPart('add_user_do') :Args(0) {
+	my ($self, $c) = @_;
+	
+	# Getting form parameters
+	my $username 	= $c->request->params->{username};
+	my $firstname 	= $c->request->params->{firstname};
+	my $lastname	= $c->request->params->{lastname};
+	my $mail			= $c->request->params->{mail};
+	my $password 	= $c->request->params->{password};
+	my $social		= $c->request->params->{social};
+	
+	
+	my $role 		= $c->request->params->{role};
+	
+	# Getting userpic 
+	my $link;
+	my $image 		= $c->request->upload('userpic');
+	if ($image) {
+		$image->copy_to('root/static/images/userpics');
+	
+		# Get filename of uploaded file, and create corresponding image link
+	
+		my $filename = $image->tempname;
+	
+		$c->log->debug("*** filename for new image is $filename ***");
+	
+		$filename =~ s{.+/}{};
+		$c->log->debug("*** filename for new image is $filename ***");
+		$link = $c->uri_for('/static/images/userpics/') . $filename;
+		$c->log->debug("*** link for new image is $link ***");
+	}
+	# Write to database
+	my $created = $c->model('DB::User')->create({
+		username		=> $username,
+		firstname   => $firstname,
+		lastname		=> $lastname,
+		userpic 		=> $link,
+		social		=> $social,
+		mail 			=> $mail,
+		password		=> $password,		
+	});
+	
+	
+	$created->create_related('user_roles', { role_id => $role });
+	
+	if ($role == 4 ){
+		my $shop 		= $c->request->params->{shop};
+		my $now = time;
+		$c->log->debug("*** now is $now ***");
+		my $active_till = $now + 2678400;
+		$c->log->debug("*** active till is $active_till ***");
+		my $new_shop = $c->model('DB::Shop')->create({
+			shop 		=> $shop,
+			active_till	=>	$active_till,
+			manager 	=> $created->id(),	
+		});
+	}
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_users')));
+}
+
+sub obj_user :Chained('base') :PathPart('obj_user') :CaptureArgs(1) {
+	my ($self, $c, $id) = @_;
+	
+	$c->stash(obj_user => $c->model('DB::User')->find({ id => $id }));
+	die "User with $id not found" unless($c->stash->{obj_user});
+	
+	$c->log->debug("*** Inside obj_user method ***");
+}
+
+sub delete_user :Chained('obj_user') :PathPart('delete_user') :Args(0) {
+	my ($self, $c) = @_;
+
+
+
+	my $link = $c->stash->{obj_user}->userpic;
+	
+	$link =~ s{.+/}{};
+	$link = "root/static/images" . $link;
+	
+	$c->log->debug("*** image link is $link ***");
+	unlink($link);	
+
+	$c->stash->{obj_user}->delete;
+	$c->log->debug("*** User deleted ***");
+
+	$c->response->redirect($c->uri_for($self->action_for('show_users')));
+}
+
+
+
+# Display edit user template
+sub edit_user :Chained('obj_user') :PathPart('edit_user') :Args(0) {
+	my ( $self, $c) = @_;
+	
+	$c->stash(
+		template => 'admin/edit_user.tt2',
+		uri 		=> 'edit_user_do',
+		submit 	=>	'Изменить',
+	);
+}
+
+sub edit_user_do :Chained('base') :PathPart('edit_user_do') :Args(0) {
+	my ($self, $c) = @_;
+	
+		# Getting form parameters
+	my $user_id 	= $c->request->params->{user_id};
+	my $username 	= $c->request->params->{username};
+	my $firstname 	= $c->request->params->{firstname};
+	my $lastname	= $c->request->params->{lastname};
+	my $mail			= $c->request->params->{mail};
+	my $password 	= $c->request->params->{password};
+	my $social		= $c->request->params->{social};
+	
+	
+	my $role 		= $c->request->params->{role};	
+	
+	# Getting userpic 
+	my $link;
+	my $image 		= $c->request->upload('userpic');
+	if ($image) {
+		$image->copy_to('root/static/images/userpics');
+	
+		# Get filename of uploaded file, and create corresponding image link
+	
+		my $filename = $image->tempname;
+	
+		$c->log->debug("*** filename for new image is $filename ***");
+	
+		$filename =~ s{.+/}{};
+		$c->log->debug("*** filename for new image is $filename ***");
+		$link = $c->uri_for('/static/images/userpics/') . $filename;
+		$c->log->debug("*** link for new image is $link ***");
+	}
+	
+	my $editing = $c->model('DB::User')->find({ id => $user_id });
+	
+	# Update fields entry
+	$editing->username($username);
+	$editing->firstname($firstname);
+	$editing->lastname ($lastname);
+	$editing->userpic($link);
+	$editing->social($social);
+	$editing->contact_mail($mail);
+	$editing->password($password);
+	$editing->update();
+	
+	my $new_role = $c->model('DB::UserRole')->find({ user_id => $editing->id });
+	$new_role->role_id($role);
+	$new_role->update;
+
+	
+	if ($role == 4 ){
+		my $shop = $c->request->params->{shop};
+		my $new_shop = $c->model('DB::Shop')->update_or_create({
+			shop => $shop,
+			manager => $editing->id(),	
+		});
+	}
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_users')));
+}
+
+####################################
+#		Things types CRUD	   		  #
+####################################
+
+sub thing_types :Chained('base') :PathPart('thing_types') :Args(0) {
+	my ( $self, $c ) = @_;
+	
+	$c->stash(
+				template => 'admin/show_types.tt2',
+				types		=> [ $c->model('DB::ThingType')->all() ],
+				uri		=> 'add_type',
+				);	
+}
+
+sub add_type :Chained('base') :PathPart('add_type') :Args(0) {
+	my ($self, $c) = @_;
+	
+	my $type = $c->request->params->{type};
+	
+	$c->model('DB::ThingType')->create({ type => $type });
+	
+	$c->response->redirect($c->uri_for($self->action_for('thing_types')));
+}
+
+sub delete_type :Chained('base') :PathPart('obj_type') :Args(1) {
+	my ($self, $c, $id ) = @_;
+	
+	my $type = $c->model('DB::thingType')->find({ id => $id });
+	$type->delete;
+	$c->response->redirect($c->uri_for($self->action_for('thing_types')));
+}
+
+####################################
+#		Shops CRUD	   				  #
+####################################
+
+sub show_shops :Chained('base') :PathPart('show_shops') :Args(0) {
+	my ($self, $c ) = @_;
+	
+	$c->stash(
+				template => 'admin/show_shops.tt2',
+				shops    =>[ reverse $c->model('DB::Shop')->all ],
+				);
+}
+
+sub obj_shop :Chained('base') :PathPart('obj_shop') :CaptureArgs(1) {
+	my ( $self, $c, $id ) = @_;
+	$c->stash(obj_shop => $c->model('DB::Shop')->find({ id => $id }))
+}
+sub edit_shop :Chained('obj_shop') :PathPart('edit_shop') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash(
+				template => 'admin/edit_shop.tt2',
+				uri 		=> 'edit_shop_do',
+				button 	=> 'Изменить',
+				types		=> [ $c->model('DB::ShopType')->all ],
+				);
+	
+}
+
+sub edit_shop_do :Chained('base') :PathPart('edit_shop_do') :Args(0){
+	my ($self, $c ) = @_;
+	
+	
+	my $id	 = $c->request->params->{id};
+	my $shop	 = $c->request->params->{shop};
+	my $phone = $c->request->params->{phone};
+	my $mail  = $c->request->params->{mail};
+	my $type	 = $c->request->params->{type};
+	my $alias = $c->request->params->{alias};
+	
+
+	
+	
+	my $edit_shop = $c->model('DB::Shop')->find({ id => $id });
+	
+	$edit_shop->shop($shop);
+	$edit_shop->phone($phone);
+	$edit_shop->contact_mail($mail);
+	$edit_shop->type($type);
+	$edit_shop->alias($alias);
+	$edit_shop->update;
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_shops')));
+	
+}
+
+sub add_month :Chained('base') :PathPart('add_month') :Args(1) {
+	my ( $self, $c, $id ) = @_;
+	
+	my $editing = $c->model('DB::Shop')->find({ id => $id });
+	
+	my $active_till =  $editing->active_till();
+	$active_till = $active_till + (31 * 86400);
+	$editing->active_till($active_till);
+	$editing->update;
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_shops')));
+}
+
+sub delete_month :Chained('base') :PathPart('delete_month') :Args(1) {
+	my ( $self, $c, $id ) = @_;
+	
+	my $editing = $c->model('DB::Shop')->find({ id => $id });
+	
+	my $active_till =  $editing->active_till();
+	my $delta = $active_till - time;
+	if ($delta < 3600 ){
+		$editing->active_till(time);	
+	} 
+	else {
+			$active_till = $active_till - (31 * 86400);	 
+			$editing->active_till($active_till);
+			}
+	$editing->update;
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_shops')));
+}
+
+# Shop types CRUD 
+sub shop_type :Chained('base') :PathPart('show_types') :Args(0) {
+	my ($self, $c ) = @_;
+	
+	$c->stash(
+				template => 'admin/shop_type.tt2',
+				types 	=> [ reverse $c->model('DB::ShopType')->all ],
+				);
+}
+
+sub add_shop_type :Chained('base') :PathPart('add_shop_type') :Args(0) {
+	my ($self, $c ) = @_;
+	
+	my $type = $c->request->params->{type};
+	
+	$c->model('DB::ShopType')->create({ type => $type });
+	
+	$c->response->redirect($c->uri_for($self->action_for('shop_type'))); 
+}
+
+sub obj_shop_type :Chained('base') :PathPart('obj_shop_type') :CaptureArgs(1) {
+	my ($self, $c, $id) = @_;
+	
+	$c->stash(obj_shop_type => $c->model('DB::ShopType')->find({ id => $id }));
+
+}
+
+sub delete_shop_type :Chained('obj_shop_type') :PathPart('delete_shop_type') :Args(0) {
+	my ($self, $c ) = @_;
+	
+	$c->stash->{obj_shop_type}->delete;
+	
+	$c->response->redirect($c->uri_for($self->action_for('shop_type'))); 
+}
+
+sub edit_shop_type :Chained('obj_shop_type') :PathPart('edit_shop_type') :Args(0) {
+	my ($self, $c ) = @_;
+	
+	$c->stash(template => 'admin/edit_shop_type.tt2');
+	
+}
+
+sub edit_shop_type_do :Chained('base') :PathPart('edit_shop_type_do') :Args(0) {
+	my ($self, $c) = @_;
+	
+	my $type= $c->request->params->{type};
+	
+	my $id = $c->request->params->{id};
+	
+	my $editing = $c->model('DB::ShopType')->find({id => $id});
+	$editing->type($type);
+	$editing->update;
+	
+	$c->response->redirect($c->uri_for($self->action_for('shop_type'))); 
+	
+}
+
+####################################
+#		Adds CRUD	   				  #
+####################################
+sub show_adds :Chained('base') PathPart('show_adds') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash(
+				template => 'admin/show_adds.tt2',
+				adds		=> [ reverse $c->model('DB::Add')->all ],
+				
+				);
+}
+
+sub create_adds :Chained('base') :PathPart('create_adds') :Args(0) {
+	my ($self, $c) = @_;
+	
+	my $alias = $c->request->params->{alias};
+	my $add = $c->request->params->{add};
+	
+	$c->model('DB::Add')->create({
+		alias => $alias,
+		adds => $add,
+		});
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_adds')));
+} 
+
+sub obj_add :Chained('base') PathPart('obj_add') :CaptureArgs(1) {
+	my ($self, $c, $id) = @_;
+	
+	$c->stash(obj_add => $c->model('DB::Add')->find({ id => $id }));
+	
+}
+
+sub delete_add :Chained('obj_add') :PathPart('delete_add') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash->{obj_add}->delete;
+	$c->response->redirect($c->uri_for($self->action_for('show_adds')));
+}
+
+sub edit_add :Chained('obj_add') :PathPart('edit_add') :Args(0) {
+	my ($self, $c) = @_;
+	
+	$c->stash( 
+				template => 'admin/edit_add.tt2',
+				);
+}
+
+sub edit_add_do :Chained('base') :PathPart('edit_add_do') :Args(0) {
+	my ($self, $c) = @_;
+	
+	my $alias = $c->request->params->{alias};
+	my $add = $c->request->params->{add};
+	my $id = $c->request->params->{id};
+	
+	my $editing = $c->model('DB::Add')->find({id => $id});
+	
+	$editing->alias($alias);
+	$editing->adds($add);
+	$editing->update;
+	
+	$c->response->redirect($c->uri_for($self->action_for('show_adds')));
+}
+=head1 AUTHOR
+
+Tigran,,,
+
+
+This library is free software. You can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+

@@ -1,0 +1,51 @@
+<link rel="stylesheet" type="text/css" href="[% c.uri_for('static','css', 'shop.css') %]"/> 
+
+[% PROCESS shop/menu.tt2 %]
+
+<div class="shop_content">
+Վերջին հավաքածուն<br>
+<hr>
+<br>
+
+[% things = shop.collections.last.things  %]
+[% PROCESS shop/carousel.tt2  %]
+
+
+
+<br>
+<hr>
+<br>
+
+[% FOREACH collection IN shop.collections %]
+	[% IF collection.discount.discount %]
+	[% collection.discount.discount %]% զեղչ <a href="[% c.uri_for(c.controller.action_for('thing'), [collection.things.first.id] )%]">[% collection.collection %]</a> հավաքածուի համար
+					[% IF collection.discount.active_till %] մնաց
+					[% active_till = collection.discount.active_till %]
+					[% PROCESS shop/time_rest.tt2 %]
+					 
+					
+					[% END %]<br><br>
+	[% END %]
+[% END %]
+
+
+<br><br>
+<hr >
+<br>
+[% IF shop.shop_blog.0 %]
+	<div class="las_posts">
+			<b>Նորություններ</b>
+			<hr class="label"> 
+			[% posts = shop.shop_blog.reverse %]
+			[% post = posts.0 %]
+			<a href="[% c.uri_for(c.controller.action_for('shop_post'), [post.id]) %]">[% post.header %]</a><br>
+			
+			[% post = posts.1 %]
+			<a href="[% c.uri_for(c.controller.action_for('shop_post'), [post.id]) %]">[% post.header %]</a><br>
+	
+			[% post = posts	.2 %]
+			<a href="[% c.uri_for(c.controller.action_for('shop_post'), [post.id]) %]">[% post.header %]</a><br>
+			
+	</div>
+[% END %]
+</div>

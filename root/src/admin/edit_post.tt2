@@ -1,0 +1,90 @@
+[% META title="Добавить/Изменить запись" %]
+
+<script type="text/javascript" src="[% c.uri_for('..', 'static', 'javascript', 'admin', 'edit_post.js') %]" ></script>
+<script type="text/javascript" src="[% c.uri_for('..', 'static', 'javascript', 'plugins', 'ckeditor' , 'ckeditor.js') %]"></script>
+
+<form method="post" action="[% c.uri_for(uri) %]" enctype="multipart/form-data">
+	<div class="textarea">
+	
+	Заголовок<br />  
+	<input type="text" name="header" value="[% obj_post.header %]" size="51" placeholder="Введите заголовок"><br />
+	<div id="header_error" class="red"></div><br />
+	
+	Запись<br />
+
+	<textarea rows="25" cols="70" name="post" placeholder="Введите текст записи" id="post">[% obj_post.post %]</textarea>
+	<div id="textarea_error" class="red"></div><br>
+	
+	<script type="text/javascript">
+				CKEDITOR.replace( 'post',
+				{
+					width: '520',
+					height : '400',
+					language : 'ru',
+					removePlugins  : 'resize,find,about,save,forms,scayt',	
+				});
+				
+	</script>
+	
+	<hr><br>
+	
+	<div class="tags">
+		Метки<br>
+		<input type="text" name="tags" size="51" placeholder="Введите метки, разделая запятими"><br><br>	
+		[% IF obj_post.tags %]
+			Удалить метки<br>
+			<div id="old_tags">
+			[% FOREACH tag IN obj_post.tags %]
+				<input type="checkbox" name="old_tag" value="[% tag.id %]">[% tag.tag %]<br>
+			[% END %]
+			</div>
+		[% END %]
+	</div>
+	
+	<hr>
+	<input type="checkbox" name="to_home" value="1">На главную?<br>
+	<div id="home_text">
+	Обзор<br />
+	 <textarea name="lead" value="[% obj_post.lead %]" cols="70" rows="10" placeholder="Введите текст обзора" id="obzor">[% obj_post.lead %]</textarea>
+	 <br /><div id="lead_error" class="red"></div><br />
+	</div>
+	 Последнее изменение - [% obj_post.modify %]<br>
+	</div>
+	
+	
+	<div class="post_meta">
+		<div class="rubrics">
+			
+		<select name="rubric">
+			<option value="0">Без рубрики
+			[% FOREACH rubric IN rubrics %]
+				<option value="[% rubric.id %]">[% rubric.rubric %]
+			[% END %]
+			
+			[% IF obj_post.rubric %]
+				<option selected value=[% obj_post.rubric.id %]>[% obj_post.rubric.rubric %]
+			[% END %]
+		</select><br>
+		<div id="select_error" class="red"></div><br>
+		
+		
+		
+			<br>
+			<input type="file" name="thumbnail"><br><br>
+			<div id="thumb_error" class="red"></div>
+			Титул миниатюры<br>
+			<textarea name="image_title" placeholder="Введите текст" rows="3" cols="25">[% obj_post.thumbnail_info %]</textarea><br>
+		
+			[% IF obj_post.thumbnail %]
+			<img src="[% obj_post.thumbnail %]" width="220" height="200" class="form_thumbnail">
+			[% END %]
+			
+	</div>
+		
+				
+		<input type="hidden" name="id" value="[% obj_post.id %]">
+		<input type="submit" value="[% submit %]" class="button">
+	</div>
+	
+	
+</form>

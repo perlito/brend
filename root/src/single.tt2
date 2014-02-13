@@ -1,0 +1,44 @@
+<div id="single_post">
+	<div class="horizontal">
+		<h1>[% post.header %]</h1>[% header = post.header %]<br>
+			<div class="post_thumbnail">
+				<img src="[% post.thumbnail %]" title="[% post.thumbnail_info %]">
+			</div>
+		[% post.post %]<br><br>
+		<hr class="clear label">
+		
+		[% IF post.tags %]
+			Թեգեր<br>
+			[% FOREACH tag IN post.tags %]
+				<a href="[% c.uri_for(c.controller.action_for('tag'), tag.id) %]">[% tag.tag %]</a>
+			[% END %]
+		[% END %]
+	</div>
+	
+	<div class="in_that_rubric horizontal">
+		<b>Այս բաժնի այլ նյութեր</b>
+		<hr class="label"> 
+		[% FOREACH post IN rubric.posts.reverse.slice(0,4) %]
+		<ul>
+			<li>
+				<a href="[% c.uri_for(c.controller.action_for('post'), post.id )%]">[% post.header %]</a>
+			</li>
+		</ul>
+		[% END %]
+	</div>
+	
+	[% IF rel_post %]
+		<div class="with_that_tag horizontal">
+		
+			<b>Այս թեմայով</b><br>
+			[% FOREACH rel_post IN rel_posts.slice(0,4) %]
+				[% IF rel_post.header != header %]
+					<a href="[% c.uri_for(c.controller.action_for('post'), rel_post.id )%]">[% rel_post.header %]</a><br>
+				[% END %]
+			[% END %]
+		
+		</div>
+	[% END %]
+</div>
+
+[% PROCESS sidebar.tt2  %]

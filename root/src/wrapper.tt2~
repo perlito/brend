@@ -1,0 +1,9 @@
+[% IF no_wrapper; 
+		debug("Passing $template.name  without any wrapper");
+		content;
+	ELSE;
+		wrapper = wrapper || 'site_wrapper.tt2';
+		debug("Applying $wrapper to $template.name");
+		content WRAPPER $wrapper;
+	END;
+%]

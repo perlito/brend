@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>[% template.title %]</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="[% c.uri_for('../static/css/manager.css') %]" />
+	<script type="text/javascript" src="[% c.uri_for('..', 'static', 'javascript', 'jquery.js') %]" ></script>
+	<script type="text/javascript" src="[% c.uri_for('..', 'static', 'javascript', 'admin', 'form_min.js') %]"></script>
+
+</head>
+<body>
+	<header>
+		
+	</header>
+	
+	<nav>
+		<ul>
+			<li><a href="[% c.uri_for('/') %]" target="_blank">Перейти на сайт</a></li><hr>
+			<li><a href="[% c.uri_for_action('admin/show_posts')%]">Записи</a></li>
+			<li><a href="[% c.uri_for_action('admin/add_post') %]">Добавить запись</a></li>
+			<hr>
+			<li><a href="[% c.uri_for_action('admin/show_rubrics')%]">Рубрики</a></li>
+			<li><a href="[% c.uri_for_action('admin/add_rubric') %]" >Добавить рубрику</a></li>
+			<hr>
+			<li><a href="[% c.uri_for_action('admin/show_tags') %]" >Метки</a></li>
+			[% IF c.user.roles == 'admin' %]
+			<hr>
+			<li><a href="[% c.uri_for_action('admin/show_users') %]" >Пользователи</a></li>
+			<li><a href="[% c.uri_for_action('admin/add_user') %]" >Добавить пользователя</a></li>
+			
+			<hr>
+			<li><a href="[% c.uri_for_action('admin/thing_types') %]">Типы товаров</a></li>
+			<hr>
+			<li><a href="[% c.uri_for_action('admin/show_shops') %]">Магазины</a></li>
+			<hr>
+			<li><a href="[% c.uri_for_action('admin/shop_type') %]">Типы магазинов</a></li>
+			<hr>
+			<li><a href="[% c.uri_for_action('admin/show_adds') %]">Adds</a>
+			<hr>
+			[% END %]
+			<li><a href="[% c.uri_for('/logout') %]">Выход</a></li>
+		</ul>	
+	</nav>
+	
+	<section>
+		[% content %]
+	</section>
+	
+	<footer>
+			
+	</footer>
+</body>
+</html>

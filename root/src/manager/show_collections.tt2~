@@ -1,0 +1,45 @@
+<div id="add_collection">
+<form action="[% c.uri_for(uri) %]" method="post" >
+	<script type="text/javascript">
+		$(function(){
+		$('form').submit(function(){
+				var data = $('input[name=collection]').val();
+				if (data == "" ){
+					$(this).append("<center><span class='red'>Հավաքածուն պետք է անուն ունենա</span><center>");
+					return false;				
+				}		
+			});
+		});	
+	</script>
+	<label>Ավելացնել հավաքածու</label>&nbsp;
+	<input type="text" name="collection" placeholder="Մուտքագրեք նոր հավաքածուի անունը" size="50">&nbsp;
+	
+	<input type="submit" value="  Ավելացնել  ">&nbsp;
+	<div id="collection_error" class="red"></div>
+	
+</form>
+</div>
+<br>
+<hr>
+<br>
+<table cellpadding="0" cellspascing="0">
+	<tr><th>Հավաքածու</th><th>Գործողություն</th><th>Ստեղծվել է</th></tr>
+	[% FOREACH col IN collection %]
+	<tr>
+		
+		<td>
+			[% col.collection %]
+		</td>
+		<td>
+			<a href="[% c.uri_for(c.controller.action_for('show_things'), [col.id], 1 )%]">Դիտել պարունակությունը</a><br><hr><br>
+			<a href="[% c.uri_for(c.controller.action_for('edit_collection'), [col.id] )%]">Փոխել անվանումը</a><br><hr><br>
+		
+			
+			<a href="[% c.uri_for(c.controller.action_for('delete_collection'), [col.id] ) %]">Հեռացնել</a>
+		</td>
+		<td>
+			[% col.date %]<br>
+		</td>
+	</tr>
+	[% END %]
+</table>

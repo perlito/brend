@@ -1,0 +1,27 @@
+<center>[% string %] ։ որոնման արդյունքները</center>
+<div class="horizontal left half" >
+	<b>Կայքում</b><br>
+	<hr class="label">
+	<ul class="search-results">
+		[% FOREACH result IN results.post_headers.slice(0,15) %]
+			<li><a href="[% c.uri_for(c.controller.action_for('post'), result.id )%]">[% result.header %]</a></li>
+		[% END %]
+		[% FOREACH result IN results.posts.slice(0,15) %]
+			<li><a href="[% c.uri_for(c.controller.action_for('post'), result.id )%]">[% result.header %]</a></li>
+		[% END %]
+	</ul>
+</div>
+
+<div class="horizontal left half">
+
+	<b>Բլոգներում</b>
+	<hr class="label">
+		<ul class="search-results">
+			[% FOREACH result IN results.shop_headers.slice(0,15) %]
+				<li><a href="[% c.uri_for(c.controller.action_for('shop_post'), result.id )%]">[% result.header %]</a></li>
+			[% END %]
+			[% FOREACH result IN results.posts.slice(0,15) %]
+				<li><a href="[% c.uri_for(c.controller.action_for('shop_post'), result.id )%]">[% result.header %]</a></li>
+			[% END %]
+		</ul>
+</div>

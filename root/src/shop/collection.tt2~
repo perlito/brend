@@ -1,0 +1,13 @@
+<link rel="stylesheet" type="text/css" href="[% c.uri_for('static','css', 'shop.css') %]"/> 
+
+[% PROCESS shop/menu.tt2 %]
+
+<div class="shop_content">
+	[% PROCESS shop/carousel.tt2 %]
+	
+	[% thing = things.first %]
+	
+	<hr>
+	<br><br>
+	[% PROCESS shop/thing.tt2 %]
+</div>

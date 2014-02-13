@@ -1,0 +1,14 @@
+[% META title="Пользователи" %]
+<table id="users">
+	<tr><th>Пользователь</th><th>Роль</th><th>Изменить</th><th>Удалить</th><th>Магазин</th></tr>
+	[% FOREACH user IN users %]
+	<tr>
+		<td>[% user.username %]</td>
+		<td>[% user.roles.role %]</td>
+		<td><a href="[% c.uri_for(c.controller.action_for('edit_user'), [user.id] ) %]">Изменить</a></td>
+		<td><a href="[% c.uri_for(c.controller.action_for('delete_user'), [user.id] ) %]">Удалить</a></td>
+		<td>[% user.shop.shop %]</td>
+	
+	</tr>
+	[% END %]
+</table>

@@ -1,0 +1,34 @@
+<script type="text/javascript" src="[% c.uri_for("/static/javascript/rubrics.js") %]"></script>
+<div class="show_rubrics">
+<h1>[% rubric.rubric %]</h1>
+<hr class="label">
+	
+	<ul class="show_10_rubrics">
+		[% WHILE (post = posts.next )%]
+			<li class="curled" style="margin-bottom: 5px;border: 1px solid black;" >		
+					[% IF post.thumbnail %]
+						<a href="[% c.uri_for(c.controller.action_for('post'), post.id ) %]" class="post_thumb"><img src="[% post.thumbnail %]" align="left"></a>
+					[% END %]
+						<a href="[% c.uri_for(c.controller.action_for('post'), post.id ) %]" class="post_header">[% post.header %]</a><br><br>
+					[% post.lead %]
+				<div class="clear"></div>
+			</li>	
+		[% END %]
+	</ul>
+
+	<div class="clear"></div><br>
+	
+	<div class="navigation">
+		[% IF pager.next_page %]
+			<a href="[% c.uri_for(c.controller.action_for('rubric'), [rubric.id], pager.next_page )%]">Նախորդ գրառումներ</a>
+		[% END %]
+		
+		[% IF pager.previous_page %]
+			<a href="[% c.uri_for(c.controller.action_for('rubric'), [rubric.id], pager.previous_page )%]">Հաջորգ գրառումներ</a>
+		[% END %]
+	</div>
+	
+</div>
+
+[% posts = top_posts %]
+[% PROCESS sidebar.tt2 %]

@@ -1,0 +1,29 @@
+<link rel="stylesheet" type="text/css" href="[% c.uri_for('static','css', 'shop.css') %]"/> 
+
+[% PROCESS shop/menu.tt2 %]
+
+<div class="shop_content">
+
+<center><h1>[% shop.shop %]</h1></center>
+<hr class="label">
+<br>
+<div id="shop_logo"><img src="[% shop.logo %]" width="300" height="300"></div>
+
+
+[% IF shop.country %]<b>Երկիրը։</b>&nbsp;&nbsp;[% shop.country %][% END %]<br><br>
+
+
+
+[% IF shop.address %]<b>Հասցե։</b>&nbsp;&nbsp;[% shop.address %][% END %]<br><br>
+
+[% IF shop.phone %]<b>Հեռախոս։</b>&nbsp;&nbsp;[% shop.phone %][% END %]<br><br>
+
+[% IF shop.site %]<b>Կայք։</b>&nbsp;&nbsp;<a href="http://[% shop.site %]" target="_blank">[% shop.site %]</a>[% END %]<br><br>
+
+[% IF shop.info %]
+<div class="shop_info">	
+	Խնութի մասին<hr class="label">
+	[% shop.info %]
+</div>
+[% END %]
+</div>

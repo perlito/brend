@@ -1,0 +1,15 @@
+[% META title="Записи" %]
+
+<table>
+	<tr><th>Заголовок</th><th>Рубрика</th> <th>Модифицирован</th></tr>
+	[% FOREACH post IN posts %]
+		<tr>
+			<td>[% post.header %]<br>
+				 <a href="[% c.uri_for(c.controller.action_for('edit_post'), [post.id]) %]">Изменить</a>&nbsp;&nbsp;
+				 <a href="[% c.uri_for(c.controller.action_for('delete_post'), [post.id]) %]" >Удалить</a>			
+			</td>
+			<td>[% post.rubric.rubric %]</td> 
+			<td>[% post.modify %]</td>
+		</tr>
+	[% END %]
+</table>

@@ -1,0 +1,24 @@
+[% META title="Метки" %]
+
+	<form action="[% c.uri_for(uri)%]" method="post" >
+		<input type="text" name="type" class="not_empty" >&nbsp;&nbsp;
+		
+		
+		<input type="submit" value="Добавить">
+		<div class="error red"></div>
+	</form>
+	<br><br>
+	
+<table>
+	[% FOREACH type IN types.reverse %]
+		<tr>
+			
+			<td>		
+				[% type.type %]
+			</td>
+			<td>
+				<a href="[% c.uri_for(c.controller.action_for('delete_type'), [type.id]) %]">Удалить</a>
+			</td>
+		</tr>	
+	[% END %]
+</table>

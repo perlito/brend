@@ -1,0 +1,5 @@
+[% FOREACH key = reqs.keys %]
+	[% FOREACH k IN key.keys %]
+	[% k %]=> [% key.$k%]
+	[% END %]
+[% END %]

@@ -1,0 +1,21 @@
+
+
+
+
+<div id="login" >
+<form method='post' action="[% c.uri_for('/login/manager') %]">
+	
+	<label>Անուն</label><br />
+	<input type="text" name="username"><br />
+	 
+	
+	<label>Գաղտնաբառ</label><br />
+	<input type="password" name="password"><br />
+	
+	<div id="login_error" class="red">
+		[% error_message %]	
+	</div><br />
+	
+	<input type="submit" value="Մուտք">
+</form>
+</div>

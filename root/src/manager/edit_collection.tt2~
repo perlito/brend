@@ -1,0 +1,11 @@
+
+<form action="[% c.uri_for(uri) %]" method="post" >
+	
+	<label>Ավելացնել հավաքածու</label>&nbsp;
+	<input type="text" name="collection" placeholder="Մուտքագրեք նոր հավաքածուի անունը" size="50" value="[% obj_col.collection %]">&nbsp;
+	
+	<input type="hidden" value="[% obj_col.id %]">
+	<input type="submit" value="[% button %]">&nbsp;
+	<div id="collection_error" class="red"></div>
+	
+</form>
